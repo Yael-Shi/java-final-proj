@@ -2,7 +2,7 @@
 This is a final project in "java advanced" course, done with a partner.<br>
 <br>
 Functional Design:<br>
-Ticket Booking System for Performances.<br>
+Ticket Booking System for Concerts, baseed on jsf and jpa.<br>
 The user enters the site, selects an artist, performance location, and date.<br>
 Then, they enter a new site where they can book either marked or unmarked tickets. They choose the option they prefer.<br>
 They can select the number of unmarked seats.<br>
