@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<h:head>
+    <title>Choose your seats</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h:messages id="globalMessages" globalOnly="true" />
+        <p>You are ordering tickets for  </p>
+        <h:outputLabel value= "#{menuBean.selectedArtist} in #{menuBean.selectedVenue} at #{menuBean.selectedDate}"/><br/>
+        <h:outputLabel value="Seating Type:" />
+
+        <h:selectOneRadio value="#{orderBean.seatType}" layout="lineDirection">
+            <f:selectItem itemLabel="Unmarked Seats" itemValue="unmarked" />
+            <f:selectItem itemLabel="Marked Seats" itemValue="marked" />
+            <f:ajax event="change"  render="seatsInput markedTable" execute=" @form" />
+        </h:selectOneRadio>
+
+
+        <h:panelGroup id="seatsInput" >
+
+            <h:outputLabel class="form-label" value="Select number of seats to buy:"  rendered ="#{orderBean.seatType eq 'unmarked'}"/>
+            <h:inputText class ="form-input" value="#{orderBean.numberOfSeatsToBuy}" id="numberOfSeatsToBuy" rendered ="#{orderBean.seatType eq 'unmarked'}" >
+                <h:outputText value ="#{orderBean.validateUnmarkedSeats()}"  rendered ="#{orderBean.seatType eq 'unmarked'}" />
+            </h:inputText>
+
+        </h:panelGroup>
+        <h:panelGroup id="markedTable" >
+            <h:dataTable value="#{orderBean.seatMatrix}" var="row" styleClass="seatMatrixTable" rendered ="#{orderBean.seatType eq 'marked'}">
+                <c:forEach begin="1" end="5" var="column">
+                    <h:column>
+                        <h:outputText value="#{row[column - 1] ? 'T' : 'F'}" styleClass="#{row[column - 1] ? 'trueSpot' : 'falseSpot'}" />
+                    </h:column>
+                </c:forEach>
+            </h:dataTable>
+            <h:outputText value="Available Seats:" style="font-weight:bold" escape="false" rendered ="#{orderBean.seatType eq 'marked'}"/>
+            <h:outputText value="#{orderBean.printAvailableSeats()}" escape="false" rendered ="#{orderBean.seatType eq 'marked'}" />
+            <h:outputLabel class="form-label" for="rowNumber" value="Enter row number:" rendered ="#{orderBean.seatType eq 'marked'}"/>
+            <h:inputText class ="form-input" id="rowNumber" value="#{orderBean.selectedRow}" rendered ="#{orderBean.seatType eq 'marked'}"/>
+
+            <h:outputLabel class="form-label" for="seatNumber" value="Enter seat number:" rendered ="#{orderBean.seatType eq 'marked'}" />
+            <h:inputText class ="form-input" id="seatNumber" value="#{orderBean.selectedSeat}" rendered ="#{orderBean.seatType eq 'marked'}" />
+
+            <h:commandButton class ="form-button" value="Check Availability" action="#{orderBean.checkAvailability}" rendered ="#{orderBean.seatType eq 'marked'}" />
+
+            <div style="display: block;">
+                <h:outputText value="#{orderBean.availabilityMessage}" rendered="#{not empty orderBean.availabilityMessage}" styleClass="availabilityMessage" />
+            </div>
+        </h:panelGroup>
+
+        <h:commandButton class = "form-button" value="Confirm Order" action="#{orderBean.confirm}"  />
+        <div style="display: block;">
+            <h:outputText value ="#{orderBean.errorMessage}" style="font-weight: bold; color: red;" />
+        </div>
+    </h:form>
+
+</h:body>
+</html>

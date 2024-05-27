@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"/>
+</h:head>
+
+<h:body>
+
+    <h1>Tickets for all the best concerts in a venue near you</h1>
+    <h:link value="Admin Settings" outcome="admin.xhtml" />
+    <br />
+    <h:link value="Add a review" outcome="review.xhtml" />
+
+    <div class="flex-container">
+        <h:form class="concert-form">
+            <h:panelGrid columns="1">
+                <h:outputLabel class ="form-label" for="artistList" value="Select performer:" />
+                <h:selectOneMenu id = "artistList" value="#{menuBean.selectedArtist}" required = "true" styleClass="form-control">
+                    <f:selectItem itemLabel="Select an artist" itemValue="#{null}" noSelectionOption="true" />
+                    <f:selectItems value="#{menuBean.artistItems}"  />
+                    <f:ajax event = "change" listener="#{menuBean.updateVenueList}" render ="venueList imagePanel reviewsList reviewText"/>
+                    <h:message for="artistList" styleClass="error-message" />
+
+                </h:selectOneMenu>
+
+                <h:panelGroup id="imagePanel">
+                    <h:graphicImage value="#{menuBean.imagePath}" rendered="#{not empty menuBean.imagePath}" />
+                </h:panelGroup>
+
+                <h:outputLabel class ="form-label" for="venueList" value="Select venue:" />
+                <h:selectOneMenu id ="venueList" value ="#{menuBean.selectedVenue}" required = "true">
+                    <f:selectItem itemLabel="Select a venue" itemValue="#{null}" noSelectionOption="true" />
+                    <f:selectItems value="#{menuBean.venueItems}" />
+                    <f:ajax event = "change" listener="#{menuBean.updateDateList}" render ="dateList"/>
+                    <h:message for="venueList" styleClass="error-message" />
+
+                </h:selectOneMenu>
+
+                <h:outputLabel for="artistList" value="Select Date:" />
+                <h:selectOneMenu id="dateList" value="#{menuBean.selectedDate}" required="true">
+                    <f:selectItem itemLabel="Select a date" itemValue="#{null}" noSelectionOption="true" />
+                    <f:selectItems value="#{menuBean.dateItems}" />
+
+                    <h:message for="dateList" styleClass="error-message" />
+
+                </h:selectOneMenu>
+
+                <h:commandButton value="Proceed to Order" action="#{menuBean.selectConcert}" styleClass="btn btn-primary">
+                </h:commandButton>
+
+                <br />
+                <div style="display: block;">
+                    <h:panelGroup id="reviewPanel">
+                        <h:outputText id = "reviewText" class ="form-label" value="Reviews for #{menuBean.selectedArtist}"  />
+
+                        <h:dataTable id="reviewsList" value="#{menuBean.allReviews}"
+                                     var="review" styleClass="reviews-table">
+                            <h:column>
+                                <h:outputText value="#{review}" />
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGroup>
+                </div>
+            </h:panelGrid>
+
+        </h:form>
+
+        <div class="image-container">
+            <h:graphicImage value="/concert.jpg" width ="300"/>
+        </div>
+    </div>
+
+</h:body>
+</html>
